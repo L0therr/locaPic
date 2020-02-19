@@ -51,7 +51,7 @@ export default function ChatScreen(props) {
             onChangeText={(value) => setSendInputText(value)}
             value={sendInputText}
           />
-          <Button icon={<Ionicons name='ios-send' titleStyle={{marginLeft:10}} size={25} color={'#fff'} />} title="Send"/>
+          <Button iconRight={true} icon={<Ionicons name='ios-send' size={25} color={'#fff'} />} titleStyle={{ marginRight :10}} title="Send"/>
           </KeyboardAvoidingView>
         </View>
        
