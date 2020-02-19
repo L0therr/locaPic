@@ -6,7 +6,7 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
 import { Text, View, StyleSheet } from 'react-native';
-import { Button, Overlay } from 'react-native-elements';
+import { Button, Overlay, Input } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 
@@ -18,6 +18,12 @@ function MapScreen(props) {
   const [btnStyle, setBtnStyle] = useState({})
   const [gettingUserPos, setGettingUserPos] = useState(false);
   const [poiList, setPoiList] = useState([]);
+
+  //modal
+  const [modalVis, setModalVis] = useState(false);
+  const [modalData, setModalData] = useState({});
+  const [titleText, setTitleText] = useState('');
+  const [descText, setDescText] = useState('');
   
 
    useEffect(() => {
@@ -36,14 +42,19 @@ function MapScreen(props) {
     askPermissions();
   }, []);
 
-
   var handlePressMap = async (e) => {
     var getLat = e.nativeEvent.coordinate.latitude;
     var getLon = e.nativeEvent.coordinate.longitude;
-    
-  
-    await setPoiList([...poiList, {lat: getLat, lon: getLon}]);
+    setModalData({lat: getLat, lon: getLon});
+    setModalVis(true);
+  }
+
+  var modalQuit = async () => {
+    setModalVis(false);
     setPoiMode(false);
+    setGettingUserPos(true)
+    await setPoiList([...poiList, {lat: modalData.lat, lon: modalData.lon, title: titleText, desc: descText}]);
+    setGettingUserPos(false)
   }
   
   if(userLocation.lat === undefined && userLocation.lon === undefined) {
@@ -52,11 +63,19 @@ function MapScreen(props) {
   }
 
 var markersToDisplay = poiList.map((marker, i) => {
-  return <Marker pinColor={'orange'} key={i} title={`Point d'interêt n° ${i}`} coordinate={{latitude: marker.lat, longitude: marker.lon}} draggable/>
+  return <Marker pinColor={'orange'} key={i} title={marker.title} description={marker.desc} coordinate={{latitude: marker.lat, longitude: marker.lon}} draggable/>
 })
   
   return (
     <View style={MapStyle.container}>
+
+      <Overlay isVisible={modalVis} borderRadius={10} height={220} overlayStyle={MapStyle.modal}>
+        <Text>{`Nouveau point d'interêt ${props.currentUsername} ?`}</Text>
+        <Input placeholder='Titre' value={titleText} onChangeText={(value) => setTitleText(value)} />
+        <Input placeholder='Description' value={descText} onChangeText={(value) => setDescText(value)} />
+        <Button containerStyle={{marginTop: 20, width: "100%"}} onPress={()=>{modalQuit()}} icon={<Ionicons name='ios-pin' size={25} color={'#fff'} />} titleStyle={{ marginLeft :10}} title="Valider"/>
+      </Overlay>
+
       <MapView style={MapStyle.mapStyle} mapType='hybrid'
         initialRegion={{latitude: 48.866667, longitude: 2.333333, latitudeDelta: 0.0922, longitudeDelta: 0.0421}}
         loadingEnabled={true} onPress={(e)=>{if (poiMode) {handlePressMap(e);}}}
@@ -86,4 +105,8 @@ var MapStyle = StyleSheet.create({
   mapStyle: {
     flex:1,
   },
+  modal: {
+    padding: 25,
+    alignItems: 'center'
+  }
 });
