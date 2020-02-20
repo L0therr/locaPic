@@ -3,8 +3,11 @@ import { View, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native
 import { Ionicons } from '@expo/vector-icons';
 import { ListItem, Input, Button } from 'react-native-elements';
 
+//REDUX
+import { connect } from 'react-redux';
 
-export default function ChatScreen(props) {
+
+function ChatScreen(props) {
 
   const [sendInputText, setSendInputText] = useState('')
 
@@ -17,7 +20,7 @@ export default function ChatScreen(props) {
   {
     name: 'Amy',
     avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-    subtitle: 'Vice President'
+    subtitle: 'bdjn'
   },
   ]
 
@@ -59,6 +62,15 @@ export default function ChatScreen(props) {
     </View>
   );
 }
+
+function mapStateToProps(state) {
+  return { test: state.addPoi }
+}
+
+export default connect(
+  mapStateToProps, 
+)(ChatScreen);
+
 
 
 var ChatStyle = StyleSheet.create({

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {connect} from 'react-redux';
-import { Text, View, StyleSheet, ImageBackground } from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Input, Button, Overlay } from 'react-native-elements';
 
@@ -21,7 +21,7 @@ function HomeScreen({ navigation, addUserNameToStore }) {
   return (
     <ImageBackground
     source={require("../assets/home.jpg")} style={HomeStyle.homeContainer} >
-
+        
         <View style={HomeStyle.formContainer}>
             <Input
                 placeholder='Username'
